@@ -25,4 +25,6 @@ e.g. connecting to the ssid `mywifi` and password `123456789`
 
 network-manager installed:
 
-`apt-get install network-manager`
+````shell
+~$ apt-get install network-manager
+````
