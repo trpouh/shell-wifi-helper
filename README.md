@@ -7,7 +7,7 @@ using it is easy:
 ~$ sh wifi.sh <operation> [opts]
 ````
 
-e.g. connecting to the ssid `mywifi` with the password `123456789`
+e.g. connecting to the ssid `mywifi` and password `123456789`
 ````shell
 ~$ sh wifi.sh connect mywifi 123456789
 ````
