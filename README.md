@@ -20,3 +20,9 @@ e.g. connecting to the ssid `mywifi` and password `123456789`
 * `get_ssids`
 * `start_hotspot <ssid>`
 * `stop_hotspot`
+
+## prerequisites
+
+network-manager installed:
+
+`apt-get install network-manager`
