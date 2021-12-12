@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Internal ID used for the AccessPoint connection
-HOTSPOT_ID=Hotspot
-
 # Check installation before every operation
 IS_INSTALLED=$(dpkg -s network-manager | grep Status: | grep ok)
 
@@ -11,11 +8,15 @@ if [ -z "IS_INSTALLED" ]; then
     exit 1
 fi
 
+
+# Internal ID used for the AccessPoint connection
+HOTSPOT_ID=Hotspot
+
 # usage: disconnect
 disconnect()
 {
     CONNECTION=$(nmcli dev status | awk '{if($2=="wifi")print$4}')
-    echo "Disconnecting from Wifi: $CONNECTION";
+    echo "Disconnecting from Wifi: $CONNECTION"
     nmcli con down id $CONNECTION
 }
 
@@ -34,31 +35,43 @@ get_wifi_ip()
     IS_CONNECTED=$(is_connected)
 
     if [ "$IS_CONNECTED" = "false" ]; then
-        echo "false"
-        exit 1
+	    echo "false"
+	    exit 1
     fi
 
     WIFI_DEV=$(nmcli dev status | awk '{if($2=="wifi")print $1}')
     IP=$(ip add show $WIFI_DEV | grep "inet " | awk '{print $2}')
     echo "$IP"
+    exit 0
 }
+
+# https://stackoverflow.com/questions/229551/how-to-check-if-a-string-contains-a-substring-in-bash
+stringContains() { [ -z "$1" ] || { [ -z "${2##*$1*}" ] && [ -n "$2" ];};}
 
 # usage: connect <ssid> [password]
 connect()
 {
     SSID=$1
 
-    echo "Connecting to Wifi: $SSID";
-
+    echo "Connecting to Wifi: $SSID;"
+    
     PASSWD=$([ -z "$2" ] && echo "" || echo "password $2")
 
-    nmcli dev wifi connect $SSID $PASSWD
+    STATUS=$(nmcli -w 3 dev wifi connect $SSID $PASSWD | grep successful)
+
+    if [ -z "$STATUS" ]; then
+        echo "false"
+        exit 1
+    fi
+
+    echo "true"
+    exit 0
 }
 
 # usage: get_ssids
 get_ssids()
 {
-    SSIDS=$(sudo iw wlan0 scan | awk -f "scan.awk")
+    SSIDS=$(sudo iw wlan0 scan | awk -f "/home/ubuntu/scan.awk")
     echo "$SSIDS"
 }
 
