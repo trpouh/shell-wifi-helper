@@ -27,6 +27,22 @@ is_connected()
     echo "$WIFI_STATE"
 }
 
+# usage: get_wifi_ip (ipv4, false)
+get_wifi_ip()
+{
+
+    IS_CONNECTED=$(is_connected)
+
+    if [ "$IS_CONNECTED" = "false" ]; then
+        echo "false"
+        exit 1
+    fi
+
+    WIFI_DEV=$(nmcli dev status | awk '{if($2=="wifi")print $1}')
+    IP=$(ip add show $WIFI_DEV | grep "inet " | awk '{print $2}')
+    echo "$IP"
+}
+
 # usage: connect <ssid> [password]
 connect()
 {
@@ -42,7 +58,8 @@ connect()
 # usage: get_ssids
 get_ssids()
 {
-    nmcli --terse dev wifi
+    SSIDS=$(sudo iw wlan0 scan | awk -f "scan.awk")
+    echo "$SSIDS"
 }
 
 # usage: start_hotspot <ssid>
