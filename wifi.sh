@@ -4,6 +4,9 @@
 IS_INSTALLED=$(dpkg -s network-manager | grep Status: | grep ok)
 CURRENT_DIR=$(dirname $0)
 
+# This ip will be assigned to the rasp (i.e. the gateway) and the subnet will be used for dhcp ip assignment 
+HOTSPOT_SUBNET=10.0.0.1/24
+
 if [ -z "IS_INSTALLED" ]; then
     echo "Network-manager not installed. Install via: apt-get install network-manager"
     exit 1
@@ -95,7 +98,7 @@ start_hotspot()
     echo "Wifi Adapter ($WIFI_DEV) can create Access Point"
     echo "Creating Access Point: $SSID"
     nmcli con add type wifi ifname $WIFI_DEV con-name $HOTSPOT_ID ssid $SSID
-    nmcli con modify $HOTSPOT_ID 802-11-wireless.mode ap 802-11-wireless.band bg ipv4.method shared
+    nmcli con modify $HOTSPOT_ID 802-11-wireless.mode ap 802-11-wireless.band bg ipv4.method shared ipv4.addresses $HOTSPOT_SUBNET
     nmcli con up $HOTSPOT_ID
 
   else
