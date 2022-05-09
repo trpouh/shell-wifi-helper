@@ -2,6 +2,7 @@
 
 # Check installation before every operation
 IS_INSTALLED=$(dpkg -s network-manager | grep Status: | grep ok)
+CURRENT_DIR=$(dirname $0)
 
 if [ -z "IS_INSTALLED" ]; then
     echo "Network-manager not installed. Install via: apt-get install network-manager"
@@ -71,7 +72,7 @@ connect()
 # usage: get_ssids
 get_ssids()
 {
-    SSIDS=$(sudo iw wlan0 scan | awk -f "/home/ubuntu/scan.awk")
+    SSIDS=$(sudo iw wlan0 scan | awk -f "$CURRENT_DIR/scan.awk")
     echo "$SSIDS"
 }
 
