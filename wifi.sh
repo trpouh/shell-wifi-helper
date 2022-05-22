@@ -24,6 +24,16 @@ disconnect()
     nmcli con down id $CONNECTION
 }
 
+# usage is_online (true, false)
+is_online()
+{
+    #ONLINE=$(nm-online | grep online)
+    #ONLINE_STATE=$([ -z "$ONLINE" ] && echo "false" || echo "true")
+    #echo "$ONLINE_STATE"
+    ONLINE=$(ping -q -c1 8.8.8.8 > /dev/null 2>&1 && echo true || echo false)
+    echo "$ONLINE"
+}
+
 # usage: is_connected (true, false)
 is_connected()
 {
